@@ -16,7 +16,9 @@ public class Main {
        serverSocket = new ServerSocket(4221);
        serverSocket.setReuseAddress(true);
        System.out.println("accepted new connection");
-       new Thread(new Server(serverSocket.accept())).start();
+       while (true){
+           new Thread(new Server(serverSocket.accept())).start();
+       }
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      }

@@ -26,13 +26,23 @@ public class Server implements Runnable{
             while (socketInputStream.ready()){
                 messageFromClient = socketInputStream.readLine();
                 responseFromClient.add(messageFromClient);
-                String[] parsedInput = messageFromClient.split(" ");
-                if(parsedInput[0].equalsIgnoreCase("GET")){
-                    if(parsedInput[1].equalsIgnoreCase("/")){
-                        socketOutputStream.write(HTTPEncoder.OK.getBytes(StandardCharsets.UTF_8));
-                    }else{
-                        socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
-                    }
+            }
+            HTTPDecoder.decodeHTTPResponse(responseFromClient);
+            if(HTTPDecoder.httpInputKeyValue.getOrDefault("PATH","NULL").equalsIgnoreCase("/")){
+                socketOutputStream.write(HTTPEncoder.OK.getBytes(StandardCharsets.UTF_8));
+                socketOutputStream.write(HTTPEncoder.CRLF.getBytes(StandardCharsets.UTF_8));
+                return;
+            }
+            else{
+                if(HTTPDecoder.httpInputKeyValue.getOrDefault("COMMAND","NULL").equalsIgnoreCase("echo")){
+                    socketOutputStream.write(HTTPEncoder.OK.getBytes(StandardCharsets.UTF_8));
+                    socketOutputStream.write(HTTPEncoder.TEXT.getBytes(StandardCharsets.UTF_8));
+                    socketOutputStream.write(HTTPEncoder
+                            .getParsedContentLength(HTTPDecoder.httpInputKeyValue.get("INPUT")).getBytes(StandardCharsets.UTF_8));
+                    socketOutputStream.write(HTTPDecoder.httpInputKeyValue.get("INPUT").getBytes(StandardCharsets.UTF_8));
+                    socketOutputStream.write(HTTPEncoder.CRLF.getBytes(StandardCharsets.UTF_8));
+                }else{
+                    socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
                 }
             }
 
