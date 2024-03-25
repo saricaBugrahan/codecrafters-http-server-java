@@ -21,15 +21,16 @@ public class HTTPDecoder {
                         System.out.println("Command Piece "+commandSplit[i]);
                         input+=commandSplit[i]+"/";
                     }
-                    httpInputKeyValue.put("INPUT",input.substring(0,input.length()-1));
-
+                    if(input.length() != 0){
+                        httpInputKeyValue.put("INPUT",input.substring(0,input.length()-1));
+                    }
                 }
             }
             else if(splitResponse[0].equalsIgnoreCase("Host:")){
                 httpInputKeyValue.put("HOST_ADR",splitResponse[1].split(":")[0]);
                 httpInputKeyValue.put("HOST_PORT",splitResponse[1].split(":")[1]);
             }
-            else if(splitResponse[0].equalsIgnoreCase("User-Agent")){
+            else if(splitResponse[0].equalsIgnoreCase("User-Agent:")){
                 httpInputKeyValue.put("USER-AGENT",splitResponse[1]);
             }
         }

@@ -41,7 +41,17 @@ public class Server implements Runnable{
                             .getParsedContentLength(HTTPDecoder.httpInputKeyValue.get("INPUT")).getBytes(StandardCharsets.UTF_8));
                     socketOutputStream.write(HTTPDecoder.httpInputKeyValue.get("INPUT").getBytes(StandardCharsets.UTF_8));
                     socketOutputStream.write(HTTPEncoder.CRLF.getBytes(StandardCharsets.UTF_8));
-                }else{
+
+                }else if(HTTPDecoder.httpInputKeyValue.getOrDefault("COMMAND","NULL").equalsIgnoreCase("user-agent")){
+                    socketOutputStream.write(HTTPEncoder.OK.getBytes(StandardCharsets.UTF_8));
+                    socketOutputStream.write(HTTPEncoder.TEXT.getBytes(StandardCharsets.UTF_8));
+                    socketOutputStream.write(HTTPEncoder
+                            .getParsedContentLength(HTTPDecoder.httpInputKeyValue.get("USER-AGENT")).getBytes(StandardCharsets.UTF_8));
+
+                    socketOutputStream.write(HTTPDecoder.httpInputKeyValue.get("USER-AGENT").getBytes(StandardCharsets.UTF_8));
+                    socketOutputStream.write(HTTPEncoder.CRLF.getBytes(StandardCharsets.UTF_8));
+
+                } else{
                     socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
                 }
             }
