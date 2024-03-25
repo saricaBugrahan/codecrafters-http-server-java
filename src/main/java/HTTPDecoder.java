@@ -15,7 +15,14 @@ public class HTTPDecoder {
             if(splitResponse[0].equalsIgnoreCase("GET")){
                 httpInputKeyValue.put("HTTP_METHOD",splitResponse[0]);
                 httpInputKeyValue.put("PATH",splitResponse[1]);
-
+                httpInputKeyValue.put("VERSION",splitResponse[2]);
+            }
+            else if(splitResponse[0].equalsIgnoreCase("Host:")){
+                httpInputKeyValue.put("HOST_ADR",splitResponse[1].split(":")[0]);
+                httpInputKeyValue.put("HOST_PORT",splitResponse[1].split(":")[1]);
+            }
+            else if(splitResponse[0].equalsIgnoreCase("User-Agent")){
+                httpInputKeyValue.put("USER-AGENT",splitResponse[1]);
             }
         }
     }
