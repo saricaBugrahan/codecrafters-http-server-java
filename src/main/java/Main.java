@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class Main {
   public static void main(String[] args) {
@@ -10,18 +9,16 @@ public class Main {
 
     // Uncomment this block to pass the first stage
 
-     ServerSocket serverSocket = null;
+    ServerSocket serverSocket = null;
      Socket clientSocket = null;
 
      try {
        serverSocket = new ServerSocket(4221);
        serverSocket.setReuseAddress(true);
-       clientSocket = serverSocket.accept(); // Wait for connection from client.
        System.out.println("accepted new connection");
-       clientSocket.getOutputStream().write(HTTPEncoder.OK.getBytes(StandardCharsets.UTF_8));
+       new Thread(new Server(serverSocket.accept())).start();
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
-
      }
   }
 }

@@ -19,7 +19,20 @@ public class Server implements Runnable{
             BufferedReader socketInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             DataOutputStream socketOutputStream = new DataOutputStream(clientSocket.getOutputStream());
             String messageFromClient;
-            socketOutputStream.write(HTTPEncoder.OK.getBytes(StandardCharsets.UTF_8));
+            while (socketInputStream.ready()){
+                messageFromClient = socketInputStream.readLine();
+                String[] parsedInput = messageFromClient.split(" ");
+                if(parsedInput[0].equalsIgnoreCase("GET")){
+                    if(parsedInput[1].equalsIgnoreCase("/")){
+                        socketOutputStream.write(HTTPEncoder.OK.getBytes(StandardCharsets.UTF_8));
+                    }else{
+                        socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
+                    }
+                }
+            }
+
+
+            socketOutputStream.flush();
             this.clientSocket.close();
 
         } catch (IOException e) {

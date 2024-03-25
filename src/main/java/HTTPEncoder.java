@@ -6,6 +6,8 @@ public class HTTPEncoder {
 
     public static String OK = "HTTP/1.1 200 OK\r\n\r\n";
 
+    public static String ERROR = "HTTP/1.1 404 Not Found\r\n\r\n";
+
     public static String parseIntoHTTPResponse (String message){
         return HEADER+message+CRLF+CRLF;
     }
