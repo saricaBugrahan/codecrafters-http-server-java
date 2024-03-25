@@ -10,7 +10,7 @@ public class HTTPEncoder {
 
     public static String TEXT = "Content-Type: text/plain\r\n";
 
-
+    public static String FILE = "Content-Type: application/octet-stream\r\n";
 
 
     public static String getParsedContentLength(String message){

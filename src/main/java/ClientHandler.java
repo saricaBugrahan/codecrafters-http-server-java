@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.LinkedList;
 
-public class Server implements Runnable{
+public class ClientHandler implements Runnable{
 
     private Socket clientSocket;
 
     private LinkedList<String> responseFromClient;
 
-    public Server(Socket clientSocket){
+    public ClientHandler(Socket clientSocket){
         this.clientSocket = clientSocket;
     }
 
@@ -51,7 +52,22 @@ public class Server implements Runnable{
                     socketOutputStream.write(HTTPDecoder.httpInputKeyValue.get("USER-AGENT").getBytes(StandardCharsets.UTF_8));
                     socketOutputStream.write(HTTPEncoder.CRLF.getBytes(StandardCharsets.UTF_8));
 
-                } else{
+                } else if(HTTPDecoder.httpInputKeyValue.getOrDefault("COMMAND","NULL").equalsIgnoreCase("files")){
+                    FolderChecker.setFolder(HTTPDecoder.httpInputKeyValue.get("INPUT"));
+                    byte[] fileContent = FolderChecker.search();
+                    if(fileContent == null){
+                        socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
+
+                    }
+                    else{
+                        socketOutputStream.write("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\n".getBytes(StandardCharsets.UTF_8));
+                        socketOutputStream.write(("Content-Length: "+fileContent.length+"\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+                        socketOutputStream.write(fileContent);
+                    }
+
+                }
+
+                else{
                     socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
                 }
             }

@@ -16,10 +16,9 @@ public class HTTPDecoder {
                 String[] commandSplit = splitResponse[1].split("/");
                 if(commandSplit.length>1){
                     httpInputKeyValue.put("COMMAND",commandSplit[1]);
-                    String input = "";
+                    StringBuilder input = new StringBuilder();
                     for(int i = 2;i< commandSplit.length;i++){
-                        System.out.println("Command Piece "+commandSplit[i]);
-                        input+=commandSplit[i]+"/";
+                        input.append(commandSplit[i]).append("/");
                     }
                     if(input.length() != 0){
                         httpInputKeyValue.put("INPUT",input.substring(0,input.length()-1));
