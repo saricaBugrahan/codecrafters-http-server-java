@@ -1,39 +1,53 @@
-[![progress-banner](https://backend.codecrafters.io/progress/http-server/903d6023-df8d-46a1-b276-4689caeb20b3)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# HTTP Server from Scratch
 
-This is a starting point for Java solutions to the
-["Build Your Own HTTP server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
+## Overview
 
-[HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) is the
-protocol that powers the web. In this challenge, you'll build a HTTP/1.1 server
-that is capable of serving multiple clients.
+This is a custom HTTP server implementation written in Java. It provides a basic framework for handling HTTP requests and serving static files.
 
-Along the way you'll learn about TCP servers,
-[HTTP request syntax](https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html),
-and more.
+## Features
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+- **HTTP/1.1 Compatible:** Supports HTTP/1.1 protocol for communication with clients.
+- **Static File Serving:** Capable of serving static files (HTML, CSS, JavaScript, etc.) to clients.
+- **Multithreading:** Handles multiple client requests concurrently using threading.
+- **Customizable Configuration:** Allows specifying the directory from which to serve files.
+- **Error Handling:** Provides appropriate HTTP responses for various scenarios, like file not found or unsupported HTTP methods.
 
-# Passing the first stage
+## Components
 
-The entry point for your HTTP server implementation is in
-`src/main/java/Main.java`. Study and uncomment the relevant code, and push your
-changes to pass the first stage:
+### ArgumentHandler
 
-```sh
-git add .
-git commit -m "pass 1st stage" # any msg
-git push origin master
-```
+- Parses command-line arguments to configure server settings, such as the directory from which to serve files.
 
-Time to move on to the next stage!
+### ClientHandler
 
-# Stage 2 & beyond
+- Manages communication with individual clients, handling incoming HTTP requests and generating appropriate responses.
 
-Note: This section is for stages 2 and beyond.
+### FileHandler
 
-1. Ensure you have `java (21)` installed locally
-1. Run `./your_server.sh` to run your program, which is implemented in
-   `src/main/java/Main.java`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+- Handles file operations, such as searching for files in the specified directory and writing data to files.
+
+### HTTPDecoder
+
+- Parses HTTP request messages and extracts relevant information, such as HTTP method, path, and headers.
+
+### HTTPEncoder
+
+- Generates HTTP response headers based on the server's response to client requests.
+
+### Main
+
+- The entry point of the server application, responsible for initializing the server socket and handling incoming client connections.
+
+## Usage
+
+1. Compile the source files: `javac *.java`
+2. Run the server: `java Main`
+3. Access the server from a web browser or send HTTP requests programmatically.
+
+## Configuration
+
+- Use the `--directory` option to specify the directory from which to serve files.
+
+Example:
+```bash
+java Main --directory /path/to/files

@@ -1,5 +1,7 @@
 public class ArgumentHandler {
 
+    private int serverPortNumber = 4221;
+
     public ArgumentHandler(String[] args){
         handleArgs(args);
     }
@@ -13,7 +15,13 @@ public class ArgumentHandler {
                 if(args[i].equalsIgnoreCase("--directory")){
                     FileHandler.setFolderPath(args[++i]);
                 }
+                else if(args[i].equalsIgnoreCase("--port")){
+                    serverPortNumber = Integer.parseInt(args[++i]);
+                }
             }
         }
+    }
+    public int getServerPortNumber(){
+        return serverPortNumber;
     }
 }

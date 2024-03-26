@@ -4,11 +4,11 @@ import java.net.ServerSocket;
 public class Main {
   public static void main(String[] args) {
 
-        new ArgumentHandler(args);
+        ArgumentHandler argumentHandler = new ArgumentHandler(args);
         ServerSocket serverSocket;
 
      try {
-       serverSocket = new ServerSocket(4221);
+       serverSocket = new ServerSocket(argumentHandler.getServerPortNumber());
        serverSocket.setReuseAddress(true);
        System.out.println("accepted new connection");
        while (true){
