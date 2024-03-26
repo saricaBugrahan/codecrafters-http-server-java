@@ -47,7 +47,8 @@ This is a custom HTTP server implementation written in Java. It provides a basic
 ## Configuration
 
 - Use the `--directory` option to specify the directory from which to serve files.
-
+- Use the `--port` option for setting server port number. 
 Example:
 ```bash
 java Main --directory /path/to/files
+java Main --directory /path/to/files --port 8080
