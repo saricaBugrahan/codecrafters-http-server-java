@@ -44,6 +44,7 @@ This is a custom HTTP server implementation written in Java. It provides a basic
 2. Run the server: `java Main`
 3. Access the server from a web browser or send HTTP requests programmatically.
 
+
 ## Configuration
 
 - Use the `--directory` option to specify the directory from which to serve files.
