@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class ClientHandler implements Runnable{
 
-    private Socket clientSocket;
-
-    private LinkedList<String> responseFromClient;
+    private final Socket clientSocket;
 
     public ClientHandler(Socket clientSocket){
         this.clientSocket = clientSocket;
@@ -23,10 +20,20 @@ public class ClientHandler implements Runnable{
             BufferedReader socketInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             DataOutputStream socketOutputStream = new DataOutputStream(clientSocket.getOutputStream());
             String messageFromClient;
-            responseFromClient = new LinkedList<>();
-            while (socketInputStream.ready()){
-                messageFromClient = socketInputStream.readLine();
+            LinkedList<String> responseFromClient = new LinkedList<>();
+            while ((messageFromClient = socketInputStream.readLine()) != null && !messageFromClient.isEmpty()){
+                System.out.println(messageFromClient);
                 responseFromClient.add(messageFromClient);
+                if (messageFromClient.startsWith("Content-Length")){
+                    responseFromClient.add(messageFromClient);
+                    int len = Integer.parseInt(messageFromClient.split("Content-Length: ")[1]);
+                    socketInputStream.readLine();
+                    socketInputStream.readLine();
+                    char[] t = new char[len];
+                    socketInputStream.read(t);
+                    responseFromClient.add(new String(t));
+                    break;
+                }
             }
             HTTPDecoder.decodeHTTPResponse(responseFromClient);
             if(HTTPDecoder.httpInputKeyValue.getOrDefault("PATH","NULL").equalsIgnoreCase("/")){
@@ -53,20 +60,28 @@ public class ClientHandler implements Runnable{
                     socketOutputStream.write(HTTPEncoder.CRLF.getBytes(StandardCharsets.UTF_8));
 
                 } else if(HTTPDecoder.httpInputKeyValue.getOrDefault("COMMAND","NULL").equalsIgnoreCase("files")){
-                    FolderChecker.setFolder(HTTPDecoder.httpInputKeyValue.get("INPUT"));
-                    byte[] fileContent = FolderChecker.search();
-                    if(fileContent == null){
-                        socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
+                    if(HTTPDecoder.httpInputKeyValue.getOrDefault("HTTP_METHOD","NULL").equalsIgnoreCase("GET")){
+                        FileHandler.setFolder(HTTPDecoder.httpInputKeyValue.get("INPUT"));
+                        byte[] fileContent = FileHandler.search();
+                        if(fileContent == null){
+                            socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
 
-                    }
-                    else{
-                        socketOutputStream.write("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\n".getBytes(StandardCharsets.UTF_8));
-                        socketOutputStream.write(("Content-Length: "+fileContent.length+"\r\n\r\n").getBytes(StandardCharsets.UTF_8));
-                        socketOutputStream.write(fileContent);
+                        }
+                        else{
+                            socketOutputStream.write("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\n".getBytes(StandardCharsets.UTF_8));
+                            socketOutputStream.write(("Content-Length: "+fileContent.length+"\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+                            socketOutputStream.write(fileContent);
+                        }
+                    } else if(HTTPDecoder.httpInputKeyValue.getOrDefault("HTTP_METHOD","NULL").equalsIgnoreCase("POST")){
+                        FileHandler.setFolder(HTTPDecoder.httpInputKeyValue.get("INPUT"));
+                        System.out.println(HTTPDecoder.httpInputKeyValue.get("POST_DATA"));
+                        FileHandler.write(HTTPDecoder.httpInputKeyValue.get("POST_DATA"));
+                        socketOutputStream.write(HTTPEncoder.FILE_CREATE.getBytes());
+                        socketOutputStream.write(HTTPEncoder.CRLF.getBytes(StandardCharsets.UTF_8));
+
                     }
 
                 }
-
                 else{
                     socketOutputStream.write(HTTPEncoder.ERROR.getBytes(StandardCharsets.UTF_8));
                 }

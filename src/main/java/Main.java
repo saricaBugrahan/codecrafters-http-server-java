@@ -3,14 +3,8 @@ import java.net.ServerSocket;
 
 public class Main {
   public static void main(String[] args) {
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    System.out.println("Logs from your program will appear here!");
-    for(int i = 0;i<args.length;i++){
-        if(args[i].equalsIgnoreCase("--directory")){
-            FolderChecker.setFolderPath(args[++i]);
-        }
-    }
 
+        new ArgumentHandler(args);
         ServerSocket serverSocket;
 
      try {

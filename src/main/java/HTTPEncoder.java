@@ -1,6 +1,8 @@
+/*
+* This class handles the
+* */
 public class HTTPEncoder {
 
-    //public final static String OK = "200 OK";
     public final static String CRLF = "\r\n";
     public final static String HEADER = "HTTP/1.1";
 
@@ -10,7 +12,9 @@ public class HTTPEncoder {
 
     public static String TEXT = "Content-Type: text/plain\r\n";
 
-    public static String FILE = "Content-Type: application/octet-stream\r\n";
+    public static String FILE_READ = "Content-Type: application/octet-stream\r\n";
+
+    public static String FILE_CREATE = "HTTP/1.1 201 Created\r\n";
 
 
     public static String getParsedContentLength(String message){

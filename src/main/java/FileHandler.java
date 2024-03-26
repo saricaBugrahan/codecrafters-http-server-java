@@ -1,19 +1,19 @@
-import javax.imageio.ImageIO;
 import java.io.*;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FolderChecker {
+public class FileHandler {
 
-    private static String folderPath;
+    private static String folderPath = "./";
     private static String folder;
 
     public static Set<String> listOfFilesInDir(){
         if(folderPath == null)
             return null;
 
-        return Stream.of(new File(folderPath).listFiles())
+        return Stream.of(Objects.requireNonNull(new File(folderPath).listFiles()))
                 .filter(file -> !file.isDirectory())
                 .map(File::getName)
                 .collect(Collectors.toSet());
@@ -33,23 +33,24 @@ public class FolderChecker {
         }
         FileInputStream fileInputStream = new FileInputStream(new File(folderPath,folder));
         byte[] data = fileInputStream.readAllBytes();
+        fileInputStream.close();
         return data;
     }
 
-    public static String getFolderPath() {
-        return folderPath;
+    public static void write(String data) throws IOException {
+        FileWriter fileWriter = new FileWriter(folderPath+"/"+folder);
+        fileWriter.write(data);
+        fileWriter.close();
     }
+
+
 
     public static void setFolderPath(String folderPath) {
-        FolderChecker.folderPath = folderPath;
-    }
-
-    public String getFolder() {
-        return folder;
+        FileHandler.folderPath = folderPath;
     }
 
     public static void setFolder(String folder) {
-        FolderChecker.folder = folder;
+        FileHandler.folder = folder;
     }
 
 
